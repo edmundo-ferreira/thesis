@@ -1,0 +1,95 @@
+\input{Preamble} % file "Thesis_Preamble.tex"
+
+
+
+
+\begin{document}
+
+	% Set plain page style (no headers, footer with centered page number)
+	% Set roman numbering (i,ii,...) before the start of chapters
+	\pagestyle{plain}
+	\pagenumbering{roman}
+
+	% Cover page
+	\input{FrontCover} 
+
+	% % Dedication page (optional)
+	% \input{Dedication}
+
+	% % Acknowledgments (optional)
+	% \input{Acknowledgements} 
+
+	% % Abstract (both in english and portuguese)
+	% \input{Resumo} 
+	% \input{Abstract}
+
+	% Table of contents
+	\tableofcontents
+	\cleardoublepage 
+
+	% % List of tables	
+	% \listoftables
+	% \addcontentsline{toc}{section}{\listtablename}
+	% \cleardoublepage 
+
+	% % List of figures
+	% \listoffigures
+	% \addcontentsline{toc}{section}{\listfigurename}
+	% \cleardoublepage 
+
+	% % Nomenclature
+	% \input{Nomenclature}
+	% \printnomenclature
+	% \addcontentsline{toc}{section}{\nomname}
+	% \cleardoublepage
+
+	% % Entries of glossary list
+	% \input{Glossary} 
+	% \printglossary
+	% \addcontentsline{toc}{section}{\glossaryname}
+	% \cleardoublepage
+
+	% Set arabic numbering (1,2,...) after preface
+	\setcounter{page}{1}
+	\pagenumbering{arabic}
+
+
+	% Chapters
+	\input{Chp1_introduction} 
+	\input{Chp2_theoretical_computational_methods}
+	\input{Chp3_experimental_methods}
+	\input{Chp4_conclusions} 
+
+	% ----------------------------------------------------------------------
+	%  bibliography
+	% ----------------------------------------------------------------------
+	% bibliography style
+	% > entries ordered alphabetically
+	%\bibliographystyle{plain}
+	% > unsorted with entries appearing in the order in which the citations appear.
+	%\bibliographystyle{unsrt}
+	% > entries ordered alphabetically, with first names and names of journals and months abbreviated
+	%\bibliographystyle{abbrv}
+	% > entries ordered alphabetically, with reference markers based on authors' initials and publication year
+	%\bibliographystyle{alpha}
+	%
+	% replacement bibliography styles provided by 'natbib' package
+	% (plainnat.bst, abbrvnat.bst, unsrtnat.bst )
+	% > entries ordered alphabetically
+	%\bibliographystyle{plainnat}
+	% > unsorted with entries appearing in the order in which the citations appear.
+	%\bibliographystyle{unsrtnat}
+	% > entries ordered alphabetically, with first names and names of journals and months abbreviated
+	\bibliographystyle{abbrvnat}
+	% > entries ordered alphabetically, with reference markers based on authors' initials and publication year
+	%\bibliographystyle{alpha}
+	\cleardoublepage
+	\bibliography{mybib} 
+	\addcontentsline{toc}{chapter}{\bibname}
+	\cleardoublepage
+
+	%  Appendix (optional)
+	%\appendix
+	%\input{Thesis_Appendix} % file "Thesis_Appendix.tex"
+
+\end{document}

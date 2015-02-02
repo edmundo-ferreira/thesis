@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for fname in *.svg
+do
+    echo Processing ${fname%.*}
+    inkscape -D -d 800 -f $fname -A ${fname%.*}.pdf
+    
+done
+
+
