@@ -52,14 +52,14 @@ Substituting the flame velocity, \eqref{kine_eq} and flame normal \eqref{normal_
 \end{theorem}
 \comment{missing boundary conditions (isn't this a cauchy problem???)}
 
-The determination of the points of the flame front are determined from G-equation \eqref{G_eq} and with the help of definition \eqref{lsf}, however the velocity field at the flame front must be prescribed ($ \left.\vec{u}\right|_{G=G_0} $), along side with a value or model for the laminar burning velocity $S_L$.
+The determination of the points of the flame front are determined from
+G-equation \eqref{G_eq} and with the help of definition \eqref{lsf}, however the velocity field at the flame front must be prescribed ($ \left.\vec{u}\right|_{G=G_0} $), along side with a value or model for the laminar burning velocity $S_L$.
+\comment{Non dimensional G-Equation leads to the same equation therefore no
+physical significance can be attribuited to it. Which makes sense it was
+generated out of an equilibrium of speeds}
 
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% SIMPLIFIED G-EQUATIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
 \subsection{Simplified G-Equations} 
 As mentioned on the previous section, in order to solve the G-equation, either numerically or analytically, a model for the underlying velocity field and model for the laminar burning velocity must be supplied. However there are some simplifying assumptions that can be made to the general G-equation before choosing those models. The chain of assumptions that we are about to make is sequential in most cases, thus generating G-equations of gradually more limiting domains, as seen in figure \ref{equation_flowchart}. Some assumptions have been found to be true experimentally in wide domain of flow circumstances (like axisymmetry), while other have a quite more limited range of applicability (like non-folded or tall flames).
 
@@ -127,8 +127,10 @@ Imposing the tall flame assumption (\ref{tall_ass}) into the non-folded g-equati
 \end{empheq}
 \end{theorem}
 
+
 \begin{assumption}[\bf{Separable, Time Harmonic g-function}]
-This assumption arises as way to transform the partial differential g-equation into a ordinary differential equation.
+This assumption arises as way to transform the partial differential g-equation
+into a ordinary differential equation.\comment{Why are we assuming this? Mathematical reaseoning seems weak.}
 \begin{align}
 	g(r,t)=\bar{g}(r) + g'(r)e^{-i\omega t}
 \end{align}
@@ -164,10 +166,92 @@ As summary of this section, we represent all the equations deduced, according to
 
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% MODELING VELOCITY FIELD %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
-\subsection{Modeling Flow Velocity Field}
+\subsection{G-operators}
+\begin{align}
+&\mathcal{G}_{gen}(G,\vec{u},S_L)=\dfrac{\partial G}{\partial t} + \dfrac{\partial G}{\partial x_j} \left.u_j\right|_{G=G_0} - S_L \sqrt{\dfrac{\partial G}{\partial x_j}\dfrac{\partial G}{\partial x_j}}\\
+&\mathcal{G}_{axi}(G,\vec{u},S_L)=\dfrac{\partial G}{\partial t} + \dfrac{\partial G}{\partial r} \left.u_r\right|_{G=G_0}+\dfrac{\partial G}{\partial z} \left.u_z\right|_{G=G_0} - S_L \sqrt{\left(\dfrac{\partial G}{\partial r}\right)^2+ \left(\dfrac{\partial G}{\partial z}\right)^2}\\
+&\mathcal{G}_{nfold}(g,\vec{u},S_L)=-\dfrac{\partial g}{\partial t} -\dfrac{\partial g}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} - S_L \sqrt{\left(\dfrac{\partial g}{\partial r}\right)^2+ 1}\\
+&\mathcal{G}_{tall}(g,\vec{u},S_L)=-\dfrac{\partial g}{\partial t} -\dfrac{\partial g}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} - S_L \dfrac{\partial g}{\partial r}
+\end{align}
+
+Testing linearity and bilinearity of Tall G-operator 
+\begin{align*}
+	\mathcal{G}_{Tall}(g=\bar{g}(r)+\tilde{g}(r),\vec{u},S_L)=\mathcal{G}_{Tall}(g=\bar{g}(r),\vec{u},S_L)+ 	\mathcal{G}_{Tall}(g=\tilde{g}(r,t),\vec{u},S_L)
+\end{align*}
+
+\begin{align*}
+&\mathcal{G}_{tall}(g=\bar{g}(r)+\tilde{g}(r,t),\vec{u},S_L)=-\dfrac{\partial \tilde{g}}{\partial t} - \left(\dfrac{\partial \bar{g}}{\partial r}+ \dfrac{\partial \tilde{g}}{\partial r} \right)\left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \left(\dfrac{\partial \bar{g}}{\partial r}+ \dfrac{\partial \tilde{g}}{\partial r} \right)\\
+&\mathcal{G}_{tall}(g=\bar{g}(r),\vec{u},S_L)=- \dfrac{\partial \bar{g}}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \dfrac{\partial \bar{g}}{\partial r}\\
+&\mathcal{G}_{tall}(g=\tilde{g}(r),\vec{u},S_L)=- \dfrac{\partial \tilde{g}}{\partial t}-\dfrac{\partial \tilde{g}}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \dfrac{\partial \tilde{g}}{\partial r}
+\end{align*}
+
+
+
+
+
+
+
+
+\section{Flame Transfer Functions}
+In order to encapsulate the knowledge of the thermoacoustic response of a system, from a control theory perspectiveseveral approaches are possible, but one of the most used is the transfer function. The flame transfer function \emph{FTF} is therefore a simplification of flame system, but containing it's essential dynamic behavior to external disturbances. Since the Rayleigh Criterion postulates that the coupling of heat release and pressure oscillations could lead to instability, the heat release response to pressure oscillations would be good a transfer functions. However pressure is usually only possible to measure by intrusive techniques it usual preferred to user velocity oscillations since they also capture the acoustic field information but can be measured unobtrusively by laser Doppler velocimetry (\emph{LDV}). The FTF is usually presented in a non dimensional form therefore it custom to make it dimensionless by dividing both the velocity oscillations and heat release oscillations by their average values, therefore:
+\begin{align*}
+FTF\equiv \dfrac{\dfrac{Q'}{\bar{Q}}}{\dfrac{u'_z}{\bar{u}_z}}
+\end{align*}
+But the heat release could be calculated from (explain better)
+\begin{align*}
+Q= \int \rho_{mix} S_L q_{reac} dA_f
+\end{align*}
+If the mixture density $\rho_{mix}$, reaction heat per unit of mass $q_{reac}$, and laminar burning velocity $S_L$ are all constant the heat release would be proportional to the flame area $A_f$ only, therefore. Also important to note is that the velocity ratios $\tfrac{u'_z}{\bar{u}_z}$ might depend on $r$ and therefore FTF also depends on which is a quite undesired consequence, since the FTF should model the entire flame and so depend only on the input amplitude and frequency. To remediate this property it is usual to take the velocity ratio on the middle line i.e. $r=0$.  
+\begin{align*}
+FTF\equiv \dfrac{\dfrac{Q'}{\bar{Q}}}{\dfrac{u'_z}{\bar{u}_z}}=\dfrac{\dfrac{A'}{\bar{A}}}{\left. \dfrac{u'_z}{\bar{u}_z}\right|_{r=0}}
+\end{align*}
+
+Introducing \ref{Al} and \ref{Ab}
+\begin{align*}
+FTF= \dfrac{\dfrac{\int_0^R r \left| \dfrac{\partial g'}{\partial r} \right| dr}{\int_0^R r \left|\dfrac{\partial \bar{g}}{\partial r}\right| dr}}{ \left.\dfrac{u'_z}{\bar{u}_z}\right|_{r=0}}
+\end{align*}
+Another possible definition for the flame transfer function, which removes the explicit dependency of the $r$, could be done by taking the volumetric flow rate, i.e. taking the integral of the velocity quantities.
+The volumetric flow rate in cylindrical coordinates is given by:
+\begin{align*}
+\dot{V}_z&\equiv \int_0^{2\pi} \int_0^R u_z r dr d\theta \\
+\dot{V}_z&= 2 \pi \int_0^R \bar{u}_z r dr + 2\pi \int_0^R u'_z e^{-i \omega (t-\tau)}r dr \\
+\dot{V}_z&= \bar{\dot{V}}  + \dot{V}'e^{-i \omega (t-\tau)}\\
+\bar{\dot{V}}_z&=2 \pi \int_0^R \bar{u}_z r dr\\
+\dot{V}'_z&= 2\pi \int_0^R u'_z r dr 
+\end{align*}
+And hence a new type of FTF is proposed based in the volumetric flow rate.
+\begin{align*}
+FTF_{\dot{V}}\equiv \dfrac{\dfrac{A'}{\bar{A}}}{\dfrac{\dot{V}'_z}{\bar{\dot{V}}_z}}=\dfrac{\dfrac{\int_0^R r \left| \dfrac{\partial g'}{\partial r} \right| dr}{\int_0^R r \left|\dfrac{\partial \bar{g}}{\partial r}\right| dr}}{\dfrac{\int_0^R u'_z r dr}{\int_0^R \bar{u}_z r dr}}
+\end{align*}
+
+
+
+Since we considered the flame as axisymmetric (around the $z$ axis) its instantaneous surface area $A_f(t)$, is given has a integral of revolution of $g(r,t)$
+\begin{align}
+A_f(t)=2 \pi \int_0^R r\sqrt{\left(\dfrac{\partial g}{\partial r}\right)^2+1} dr
+\end{align}
+
+\begin{align*}
+A_f(t)=2\pi \int_0^R r \left|\dfrac{\partial g}{\partial r}\right|  dr 
+\end{align*}		
+
+\begin{align}
+A_f(t)=2\pi \int_0^R \left( \left| r \dfrac{\partial \bar{g}}{\partial r}\right| + r \left| \dfrac{\partial g'}{\partial r} \right|  e^{-i\omega t} \right) dr 
+\end{align}
+
+\begin{align}
+A_f(t)&= \bar{A}_f + A'_f e^{-i\omega t}\\
+\bar{A}_f&= 2\pi \int_0^R r \left|\dfrac{\partial \bar{g}}{\partial r}\right| dr \label{Ab}\\
+A'_f&= 2\pi \int_0^R r \left|\dfrac{\partial g'}{\partial r}\right| dr \label{Al}
+\end{align}
+
+
+
+
+
+\clearpage
+\section{Modeling Flow Velocity Field}\label{velo_fields}
 We can either supply a analytical velocity field or use experimental or computational approaches to obtain the velocity field.
 We choose the second approach and provide a analytical flow field that has quite general mathematical form, and also quite ``strong'' experimental evidence.
 
@@ -218,9 +302,18 @@ Assuming that the flow velocity wave propagates in the $z$, direction with infin
 \end{assumption}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% MODELING LAMINAR BURNING VELOCITY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
 \newpage
-\subsection{Modeling Laminar Burning Velocity}
+\section{Modeling Laminar Burning Velocity}
 The laminar burning velocity $S_L$, has dependencies of several parameters, like the chemical composition of the fuel, temperature, pressure, equivalence ratio, etc. However since G-equation is a kinematic model we focus only on the flame geometry dependencies, and underling flow field dependencies, the only parameters on equation \eqref{G_eq}.
 
 The studies carried out by Markstein, Calvin and Williams, according to \cite{bradley_1996}, culminated in a model, that for the case, of flames with ratios of flame thickness to wavelength much smaller than unity $\frac{\delta_f}{\Lambda}\ll 1$, a written as first order model. \comment{what does this ratio mean?}
@@ -269,8 +362,13 @@ To simplify the modeling it is usual to assume that the laminar burning velocity
 
 
 
+
+
+
+
+
 \newpage
-\subsection{G-Models}
+\section{G-Models}
 From the flowchart \ref{equation_flowchart}, we can see that there are several G/g-equations and with several velocity and laminar burning velocity models it is possible to generate quite a big number of different G/g models. However on the this study we will focus on models that have a constant burning velocity \ref{const_sl_ass}, and a traveling wave velocity field \ref{u_ass}, and all the g-equations that are axisymmetric or further simplified, since our imposed velocity field already is axisymmetric.
 \begin{theorem}[\bf Axisymmetric G-equation with Constant $S_L$ and Uniaxial Traveling Wave Velocity Field]
 Taking the axisymmetric G-equation \eqref{gaxi_eq}, and applying the constant $S_L$ assumption \ref{const_sl_ass} and a velocity field of assumption \ref{u_avg_ass}.
@@ -336,112 +434,3 @@ Ordinary Tall & &\\
 \label{}
 \end{table}
 
-
-
-\clearpage
-\section{G-operators}
-\begin{align}
-&\mathcal{G}_{gen}(G,\vec{u},S_L)=\dfrac{\partial G}{\partial t} + \dfrac{\partial G}{\partial x_j} \left.u_j\right|_{G=G_0} - S_L \sqrt{\dfrac{\partial G}{\partial x_j}\dfrac{\partial G}{\partial x_j}}\\
-&\mathcal{G}_{axi}(G,\vec{u},S_L)=\dfrac{\partial G}{\partial t} + \dfrac{\partial G}{\partial r} \left.u_r\right|_{G=G_0}+\dfrac{\partial G}{\partial z} \left.u_z\right|_{G=G_0} - S_L \sqrt{\left(\dfrac{\partial G}{\partial r}\right)^2+ \left(\dfrac{\partial G}{\partial z}\right)^2}\\
-&\mathcal{G}_{nfold}(g,\vec{u},S_L)=-\dfrac{\partial g}{\partial t} - \dfrac{\partial g}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} - S_L \sqrt{\left(\dfrac{\partial g}{\partial r}\right)^2+ 1}\\
-&\mathcal{G}_{tall}(g,\vec{u},S_L)=-\dfrac{\partial g}{\partial t} - \dfrac{\partial g}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \dfrac{\partial g}{\partial r}
-\end{align}
-
-Testing linearity and bilinearity of Tall G-operator 
-\begin{align*}
-	\mathcal{G}_{Tall}(g=\bar{g}(r)+\tilde{g}(r),\vec{u},S_L)=\mathcal{G}_{Tall}(g=\bar{g}(r),\vec{u},S_L)+ 	\mathcal{G}_{Tall}(g=\tilde{g}(r,t),\vec{u},S_L)
-\end{align*}
-
-\begin{align*}
-&\mathcal{G}_{tall}(g=\bar{g}(r)+\tilde{g}(r,t),\vec{u},S_L)=-\dfrac{\partial \tilde{g}}{\partial t} - \left(\dfrac{\partial \bar{g}}{\partial r}+ \dfrac{\partial \tilde{g}}{\partial r} \right)\left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \left(\dfrac{\partial \bar{g}}{\partial r}+ \dfrac{\partial \tilde{g}}{\partial r} \right)\\
-&\mathcal{G}_{tall}(g=\bar{g}(r),\vec{u},S_L)=- \dfrac{\partial \bar{g}}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \dfrac{\partial \bar{g}}{\partial r}\\
-&\mathcal{G}_{tall}(g=\tilde{g}(r),\vec{u},S_L)=- \dfrac{\partial \tilde{g}}{\partial t}-\dfrac{\partial \tilde{g}}{\partial r} \left.u_r\right|_{G=G_0}+\left.u_z\right|_{G=G_0} + S_L \dfrac{\partial \tilde{g}}{\partial r}
-\end{align*}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\clearpage
-
-Since we considered the flame as axisymmetric (around the $z$ axis) its instantaneous surface area $A_f(t)$, is given has a integral of revolution of $g(r,t)$
-\begin{align}
-A_f(t)=2 \pi \int_0^R r\sqrt{\left(\dfrac{\partial g}{\partial r}\right)^2+1} dr
-\end{align}
-
-\begin{align*}
-A_f(t)=2\pi \int_0^R r \left|\dfrac{\partial g}{\partial r}\right|  dr 
-\end{align*}		
-
-\begin{align}
-A_f(t)=2\pi \int_0^R \left( \left| r \dfrac{\partial \bar{g}}{\partial r}\right| + r \left| \dfrac{\partial g'}{\partial r} \right|  e^{-i\omega t} \right) dr 
-\end{align}
-
-\begin{align}
-A_f(t)&= \bar{A}_f + A'_f e^{-i\omega t}\\
-\bar{A}_f&= 2\pi \int_0^R r \left|\dfrac{\partial \bar{g}}{\partial r}\right| dr \label{Ab}\\
-A'_f&= 2\pi \int_0^R r \left|\dfrac{\partial g'}{\partial r}\right| dr \label{Al}
-\end{align}
-
-
-
-
-
-
-
-
-
-\clearpage
-\section{Flame Transfer Functions}
-In order to encapsulate the knowledge of the thermoacoustic response of a system, from a control theory perspectiveseveral approaches are possible, but one of the most used is the transfer function. The flame transfer function \emph{FTF} is therefore a simplification of flame system, but containing it's essential dynamic behavior to external disturbances. Since the Rayleigh Criterion postulates that the coupling of heat release and pressure oscillations could lead to instability, the heat release response to pressure oscillations would be good a transfer functions. However pressure is usually only possible to measure by intrusive techniques it usual preferred to user velocity oscillations since they also capture the acoustic field information but can be measured unobtrusively by laser Doppler velocimetry (\emph{LDV}). The FTF is usually presented in a non dimensional form therefore it custom to make it dimensionless by dividing both the velocity oscillations and heat release oscillations by their average values, therefore:
-\begin{align*}
-FTF\equiv \dfrac{\dfrac{Q'}{\bar{Q}}}{\dfrac{u'_z}{\bar{u}_z}}
-\end{align*}
-But the heat release could be calculated from (explain better)
-\begin{align*}
-Q= \int \rho_{mix} S_L q_{reac} dA_f
-\end{align*}
-If the mixture density $\rho_{mix}$, reaction heat per unit of mass $q_{reac}$, and laminar burning velocity $S_L$ are all constant the heat release would be proportional to the flame area $A_f$ only, therefore. Also important to note is that the velocity ratios $\tfrac{u'_z}{\bar{u}_z}$ might depend on $r$ and therefore FTF also depends on which is a quite undesired consequence, since the FTF should model the entire flame and so depend only on the input amplitude and frequency. To remediate this property it is usual to take the velocity ratio on the middle line i.e. $r=0$.  
-\begin{align*}
-FTF\equiv \dfrac{\dfrac{Q'}{\bar{Q}}}{\dfrac{u'_z}{\bar{u}_z}}=\dfrac{\dfrac{A'}{\bar{A}}}{\left. \dfrac{u'_z}{\bar{u}_z}\right|_{r=0}}
-\end{align*}
-
-Introducing \ref{Al} and \ref{Ab}
-\begin{align*}
-FTF= \dfrac{\dfrac{\int_0^R r \left| \dfrac{\partial g'}{\partial r} \right| dr}{\int_0^R r \left|\dfrac{\partial \bar{g}}{\partial r}\right| dr}}{ \left.\dfrac{u'_z}{\bar{u}_z}\right|_{r=0}}
-\end{align*}
-Another possible definition for the flame transfer function, which removes the explicit dependency of the $r$, could be done by taking the volumetric flow rate, i.e. taking the integral of the velocity quantities.
-The volumetric flow rate in cylindrical coordinates is given by:
-\begin{align*}
-\dot{V}_z&\equiv \int_0^{2\pi} \int_0^R u_z r dr d\theta \\
-\dot{V}_z&= 2 \pi \int_0^R \bar{u}_z r dr + 2\pi \int_0^R u'_z e^{-i \omega (t-\tau)}r dr \\
-\dot{V}_z&= \bar{\dot{V}}  + \dot{V}'e^{-i \omega (t-\tau)}\\
-\bar{\dot{V}}_z&=2 \pi \int_0^R \bar{u}_z r dr\\
-\dot{V}'_z&= 2\pi \int_0^R u'_z r dr 
-\end{align*}
-And hence a new type of FTF is proposed based in the volumetric flow rate.
-\begin{align*}
-FTF_{\dot{V}}\equiv \dfrac{\dfrac{A'}{\bar{A}}}{\dfrac{\dot{V}'_z}{\bar{\dot{V}}_z}}=\dfrac{\dfrac{\int_0^R r \left| \dfrac{\partial g'}{\partial r} \right| dr}{\int_0^R r \left|\dfrac{\partial \bar{g}}{\partial r}\right| dr}}{\dfrac{\int_0^R u'_z r dr}{\int_0^R \bar{u}_z r dr}}
-\end{align*}
